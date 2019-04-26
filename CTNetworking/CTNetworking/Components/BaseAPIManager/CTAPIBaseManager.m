@@ -154,7 +154,7 @@ NSString * const kCTAPIBaseManagerRequestID = @"kCTAPIBaseManagerRequestID";
                 self.isLoading = YES;
                 
                 id <CTServiceProtocol> service = [[CTServiceFactory sharedInstance] serviceWithIdentifier:self.child.serviceIdentifier];
-                NSURLRequest *request = [service requestWithParams:reformedParams methodName:self.child.methodName requestType:self.child.requestType];
+                NSURLRequest *request = [service requestWithParams:reformedParams methodName:self.child.methodName requestType:self.child.requestType requestContentType:self.child.requestContentType];
                 request.service = service;
                 [CTLogger logDebugInfoWithRequest:request apiName:self.child.methodName service:service];
                 
@@ -180,6 +180,63 @@ NSString * const kCTAPIBaseManagerRequestID = @"kCTAPIBaseManagerRequestID";
                 [self afterCallingAPIWithParams:params];
                 return [requestId integerValue];
             
+            } else {
+                [self failedOnCallingAPI:nil withErrorType:CTAPIManagerErrorTypeNoNetWork];
+                return requestId;
+            }
+        } else {
+            [self failedOnCallingAPI:nil withErrorType:errorType];
+            return requestId;
+        }
+    }
+    return requestId;
+}
+
+- (NSInteger)uploadWithParams:(NSDictionary *)params files:(NSDictionary * _Nullable)files {
+    NSInteger requestId = 0;
+    NSDictionary *reformedParams = [self reformParams:params];
+    if (reformedParams == nil) {
+        reformedParams = @{};
+    }
+    if ([self shouldCallAPIWithParams:reformedParams]) {
+        CTAPIManagerErrorType errorType = [self.validator manager:self isCorrectWithParamsData:reformedParams];
+        if (errorType == CTAPIManagerErrorTypeNoError) {
+            
+            // 实际的网络请求
+            if ([self isReachable]) {
+                self.isLoading = YES;
+                
+                id <CTServiceProtocol> service = [[CTServiceFactory sharedInstance] serviceWithIdentifier:self.child.serviceIdentifier];
+                NSURLRequest *request = [service requestWithParams:reformedParams methodName:self.child.methodName requestType:self.child.requestType requestContentType:self.child.requestContentType];
+                request.service = service;
+                [CTLogger logDebugInfoWithRequest:request apiName:self.child.methodName service:service];
+                
+                NSNumber *requestId = [[CTApiProxy sharedInstance] callApiUploadWithRequest:request progress:^(NSProgress * _Nonnull uploadProgress) {
+                    if ([self.delegate respondsToSelector:@selector(manager:callUploadAPIUpdateProgress:)]) {
+                        [self.delegate manager:self callUploadAPIUpdateProgress:uploadProgress];
+                    }
+                } success:^(CTURLResponse *response) {
+                    [self successedOnCallingAPI:response];
+                } fail:^(CTURLResponse *response) {
+                    CTAPIManagerErrorType errorType = CTAPIManagerErrorTypeDefault;
+                    if (response.status == CTURLResponseStatusErrorCancel) {
+                        errorType = CTAPIManagerErrorTypeCanceled;
+                    }
+                    if (response.status == CTURLResponseStatusErrorTimeout) {
+                        errorType = CTAPIManagerErrorTypeTimeout;
+                    }
+                    if (response.status == CTURLResponseStatusErrorNoNetwork) {
+                        errorType = CTAPIManagerErrorTypeNoNetWork;
+                    }
+                    [self failedOnCallingAPI:response withErrorType:errorType];
+                }];
+                [self.requestIdList addObject:requestId];
+                
+                NSMutableDictionary *params = [reformedParams mutableCopy];
+                params[kCTAPIBaseManagerRequestID] = requestId;
+                [self afterCallingAPIWithParams:params];
+                return [requestId integerValue];
+                
             } else {
                 [self failedOnCallingAPI:nil withErrorType:CTAPIManagerErrorTypeNoNetWork];
                 return requestId;

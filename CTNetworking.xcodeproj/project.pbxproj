@@ -36,6 +36,7 @@
 		4AF1D18220454C4C006736EF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4AF1D18120454C4C006736EF /* Assets.xcassets */; };
 		4AF1D18520454C4C006736EF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4AF1D18320454C4C006736EF /* LaunchScreen.storyboard */; };
 		4AF1D18820454C4C006736EF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AF1D18720454C4C006736EF /* main.m */; };
+		A38902DC227298FA00BE1238 /* CTBaseService.m in Sources */ = {isa = PBXBuildFile; fileRef = A38902DB227298FA00BE1238 /* CTBaseService.m */; };
 		ACA6BF36968B948431EBBED5 /* libPods-CTNetworking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C89AC4DE62717E44D715D01 /* libPods-CTNetworking.a */; };
 /* End PBXBuildFile section */
 
@@ -101,6 +102,8 @@
 		4AF1D18620454C4C006736EF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4AF1D18720454C4C006736EF /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		615C4C6F1B9800EECABF0C74 /* Pods-CTNetworking.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CTNetworking.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CTNetworking/Pods-CTNetworking.debug.xcconfig"; sourceTree = "<group>"; };
+		A38902DA227298FA00BE1238 /* CTBaseService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CTBaseService.h; sourceTree = "<group>"; };
+		A38902DB227298FA00BE1238 /* CTBaseService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CTBaseService.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -299,6 +302,8 @@
 				4A1E17C72045588E00BDBF7B /* CTServiceProtocol.h */,
 				4A1E17C82045588E00BDBF7B /* CTServiceFactory.h */,
 				4A1E17C92045588E00BDBF7B /* CTServiceFactory.m */,
+				A38902DA227298FA00BE1238 /* CTBaseService.h */,
+				A38902DB227298FA00BE1238 /* CTBaseService.m */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -547,6 +552,7 @@
 				4A1E17912045560D00BDBF7B /* NSObject+AXNetworkingMethods.m in Sources */,
 				4A1E178D2045560D00BDBF7B /* NSDictionary+AXNetworkingMethods.m in Sources */,
 				4A1E17C12045585A00BDBF7B /* CTDiskCacheCenter.m in Sources */,
+				A38902DC227298FA00BE1238 /* CTBaseService.m in Sources */,
 				4AF1D18820454C4C006736EF /* main.m in Sources */,
 				4AF1D17A20454C4C006736EF /* AppDelegate.m in Sources */,
 			);

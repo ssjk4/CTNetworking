@@ -22,8 +22,10 @@
 
 @implementation DemoService
 
+@synthesize apiEnvironment;
+
 #pragma mark - public methods
-- (NSURLRequest *)requestWithParams:(NSDictionary *)params methodName:(NSString *)methodName requestType:(CTAPIManagerRequestType)requestType
+- (NSURLRequest *)requestWithParams:(NSDictionary *)params methodName:(NSString *)methodName requestType:(CTAPIManagerRequestType)requestType requestContentType:(CTAPIManagerRequestContentType)requestContentType
 {
     if (requestType == CTAPIManagerRequestTypeGet) {
         NSString *urlString = [NSString stringWithFormat:@"%@/%@", self.baseURL, methodName];

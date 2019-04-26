@@ -16,7 +16,8 @@
 
 - (NSURLRequest *)requestWithParams:(NSDictionary *)params
                          methodName:(NSString *)methodName
-                        requestType:(CTAPIManagerRequestType)requestType;
+                        requestType:(CTAPIManagerRequestType)requestType
+                 requestContentType:(CTAPIManagerRequestContentType)requestContentType;
 
 - (NSDictionary *)resultWithResponseObject:(id)responseObject
                                 response:(NSURLResponse *)response
@@ -36,5 +37,14 @@
 
 @optional
 - (AFHTTPSessionManager *)sessionManager;
+
+/**
+ 生成上传文件的request
+ @param files 本地文件地址字典 地址可以为单个或数组 @{@"nameKey": @"filePath", @"nameKey" @[@"filePath", ...]}
+ */
+- (NSURLRequest *)uploadRequestWithParams:(NSDictionary *)params methodName:(NSString *)methodName
+                              requestType:(CTAPIManagerRequestType)requestType
+                       requestContentType:(CTAPIManagerRequestContentType)requestContentType
+                                    files:(NSDictionary *)files;
 
 @end

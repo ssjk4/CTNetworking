@@ -27,6 +27,37 @@ typedef NS_ENUM (NSUInteger, CTAPIManagerRequestType){
     CTAPIManagerRequestTypeDelete,
 };
 
+NS_INLINE NSString * _Nonnull
+CTAPIManagerRequestTypeStringForType(CTAPIManagerRequestType requestType) {
+    static NSArray * strArr;
+    if (!strArr) {
+        strArr = @[@"POST", @"GET", @"PUT", @"DELETE"];
+    }
+    if (requestType < 0 || requestType >= strArr.count) {
+        NSCAssert(NO, @"CTAPIManagerRequestType config error, no string for request type.");
+        return nil;
+    }
+    return strArr[requestType];
+}
+
+
+/**
+ 指定API在CTService中用何种RequestSerializer; 生成何种request
+ application/x-www-form-urlencoded : AFHTTPRequestSerializer + requestWithMethod:... //普通POST提交
+ multipart/form-data: AFHTTPRequestSerializer + multipartFormRequestWithMethod:...      //可用于文件上传
+ application/json: AFJSONRequestSerializer + requestWithMethod:...
+ application/x-plist: AFPropertyListRequestSerializer + requestWithMethod:...
+ */
+typedef NS_ENUM (NSUInteger, CTAPIManagerRequestContentType){
+    CTAPIManagerRequestContentTypeNone,                 //不指定type
+    CTAPIManagerRequestContentTypeApplicationForm,      //application/x-www-form-urlencoded
+    CTAPIManagerRequestContentTypeMultipartFormData,    //multipart/form-data
+    CTAPIManagerRequestContentTypeApplicationJson,      //application/json
+    CTAPIManagerRequestContentTypeNoneApplicationXPlist,//application/x-plist
+    CTAPIManagerRequestContentTypeTextXml,              //text/xml
+    CTAPIManagerRequestContentTypeFileMimeType          //mimeType
+};
+
 typedef NS_ENUM (NSUInteger, CTAPIManagerErrorType){
     CTAPIManagerErrorTypeNeedAccessToken, // 需要重新刷新accessToken
     CTAPIManagerErrorTypeNeedLogin,       // 需要登陆
@@ -67,11 +98,13 @@ extern NSString * _Nonnull const kCTApiProxyValidateResultKeyResponseString;
 - (NSString *_Nonnull)methodName;
 - (NSString *_Nonnull)serviceIdentifier;
 - (CTAPIManagerRequestType)requestType;
+- (CTAPIManagerRequestContentType)requestContentType;
 
 @optional
 - (void)cleanData;
 - (NSDictionary *_Nullable)reformParams:(NSDictionary *_Nullable)params;
 - (NSInteger)loadDataWithParams:(NSDictionary *_Nullable)params;
+- (NSInteger)uploadWithParams:(NSDictionary *_Nullable)params files:(NSDictionary *_Nullable)files;
 
 @end
 
@@ -97,6 +130,8 @@ extern NSString * _Nonnull const kCTApiProxyValidateResultKeyResponseString;
 @required
 - (void)managerCallAPIDidSuccess:(CTAPIBaseManager * _Nonnull)manager;
 - (void)managerCallAPIDidFailed:(CTAPIBaseManager * _Nonnull)manager;
+@optional
+- (void)manager:(CTAPIBaseManager * _Nonnull)manager callUploadAPIUpdateProgress:(NSProgress * _Nonnull)uploadProgress;
 @end
 
 @protocol CTPagableAPIManager <NSObject>
